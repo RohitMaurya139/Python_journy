@@ -1,42 +1,62 @@
-# a = range(10) 
-# print("loop1")
-# for i in range(1,20,4):
-#     print(i)
-# print('loop2')
-# for i in range(20,51):
-#     print(i)
-# print("loop3")
-# for i in range(16,-1,-1):
-#     print(i)    
+"""
+Topic: for loops and range()
+============================
 
-# table
-# n=int(input("Enter the number to generate table: "))
+Definition:
+    A for loop repeats a block of code once for each item in a sequence
+    (a list, string, tuple, range, ...).
 
-# for i in range(1,11,1):
-#     print(f" {n} X {i} = {n*i}")
+range(start, stop, step):
+    - start is inclusive (default 0)
+    - stop is exclusive (the loop stops before this number)
+    - step is how much to add each time (default 1)
+    Example: range(1, 6) -> 1, 2, 3, 4, 5
 
+Example:
+    for i in range(3):
+        print(i)      # prints 0, 1, 2
+"""
 
-# loop in string
+# ---- 1. range() with start, stop and step ----
+print("range(1, 20, 4):")
+for i in range(1, 20, 4):
+    print(i)
 
-# a="Rohit"
-# for i in range(len(a)):
-#     print(a[i])
+print("range(20, 51):")
+for i in range(20, 51):
+    print(i)
 
-# a="Rohit"
-# for char in a:
-#      print(char)
+print("range(16, -1, -1):")
+for i in range(16, -1, -1):
+    print(i)
 
-print("Break in For loop")
+# ---- 2. Multiplication table ----
+# Change n if you want another table. You can also use:
+# n = int(input("Enter the number to generate a table: "))
+n = 5
+for i in range(1, 11):
+    print(f"{n} X {i} = {n * i}")
 
-for i in range(0,10,1):
-     if i==6:
-          break
-     else:
-          print(i)
-print("Continue in For loop")
-for i in range(0,20,1):
-     if i%2==0:
-          continue
-     else:
-          print(i)
-     
+# ---- 3. Looping over a string (two ways) ----
+text = "Rohit"
+
+print("By index:")
+for i in range(len(text)):
+    print(text[i])
+
+print("Directly over characters:")
+for char in text:
+    print(char)
+
+# ---- 4. break and continue ----
+print("break example (stops when i is 6):")
+for i in range(0, 10):
+    if i == 6:
+        break
+    print(i)
+
+print("continue example (skips even numbers):")
+for i in range(0, 20):
+    if i % 2 == 0:
+        continue
+    print(i)

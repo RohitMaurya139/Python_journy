@@ -1,1 +1,2 @@
-Hello i am writing in superman.txt file from filehandle file using pythoni am appending more text data in superman.txt
+Hello, I am writing in superman.txt from fileHandel.py using Python.
+I am appending more text data in superman.txt.

@@ -1,16 +1,47 @@
+"""
+Project: Simple File Manager (CRUD)
+===================================
+
+CRUD means:
+    C -> Create a file
+    R -> Read a file
+    U -> Update a file (rename, overwrite or append)
+    D -> Delete a file
+
+Concepts used:
+    - pathlib.Path   : modern way to work with file paths.
+    - with open(...) : automatically closes files.
+    - functions      : break the program into small reusable pieces.
+    - exceptions     : handle errors (for example, permission denied) gracefully.
+    - while loop     : keep showing the menu until the user chooses Exit.
+
+How to run:
+    python fileHandleProject.py
+"""
+
 from pathlib import Path
 
+# Folder where this script lives. All relative paths are resolved from here.
 BASE_DIR = Path(__file__).resolve().parent
 
 
 def resolve_path(name):
-    p = Path(name)
-    if not p.is_absolute():
-        p = BASE_DIR / p
-    return p
+    """Return an absolute Path for `name`.
+
+    If `name` is relative, it is placed inside BASE_DIR.
+    If `name` is already absolute, it is returned unchanged.
+
+    Example:
+        resolve_path("notes.txt") -> D:\\...\\project\\notes.txt
+    """
+    path = Path(name)
+    if not path.is_absolute():
+        path = BASE_DIR / path
+    return path
 
 
 def get_int(prompt):
+    """Ask for an integer; return None if the user enters something else."""
     try:
         return int(input(prompt))
     except ValueError:
@@ -18,118 +49,138 @@ def get_int(prompt):
         return None
 
 
-def readFileFolder():
-    path = BASE_DIR
-    items = list(path.rglob('*'))
-    for i, item in enumerate(items):
-        print(f"{i+1} : {item} ")
+def list_files():
+    """Print every file and folder inside BASE_DIR."""
+    print("\nFiles and folders:")
+    items = list(BASE_DIR.rglob("*"))
+    for i, item in enumerate(items, start=1):
+        print(f"{i} : {item}")
 
 
-def createfile():
+def create_file():
+    """Create a new file and write one line of text into it."""
     try:
-        readFileFolder()
-        name = input("Please tell me your file Name: ")
-        p = resolve_path(name)
-        if not p.exists():
-            with open(p, "w") as fs:
-                data = input("Enter the file data: ")
-                fs.write(data)
-            print("FILE CREATED SUCCESSFULLY")
+        list_files()
+        name = input("Please tell me your file name: ").strip()
+        if not name:
+            print("File name cannot be empty")
+            return
+
+        path = resolve_path(name)
+        if path.exists():
+            print("This file already exists")
+            return
+
+        data = input("Enter the file data: ")
+        with open(path, "w", encoding="utf-8") as file:
+            file.write(data)
+        print("FILE CREATED SUCCESSFULLY")
+    except Exception as error:
+        print(error)
+
+
+def read_file():
+    """Read and print the contents of an existing file."""
+    try:
+        list_files()
+        name = input("Please tell me your file name: ").strip()
+        path = resolve_path(name)
+
+        if path.exists() and path.is_file():
+            with open(path, "r", encoding="utf-8") as file:
+                print(file.read())
         else:
-            print("This File Already exist")
-    except Exception as err:
-        print(err)
+            print("This file does not exist")
+    except Exception as error:
+        print(error)
 
 
-def readFile():
+def update_file():
+    """Rename, overwrite or append to an existing file."""
     try:
-        readFileFolder()
-        name = input("Please tell me your file Name: ")
-        p = resolve_path(name)
-        if p.exists() and p.is_file():
-            with open(p, "r") as fs:
-                data = fs.read()
-                print(data)
-        else:
-            print("This File does not exist")
-    except Exception as err:
-        print(err)
+        list_files()
+        name = input("Please tell me your file name: ").strip()
+        path = resolve_path(name)
 
+        if not (path.exists() and path.is_file()):
+            print("This file does not exist")
+            return
 
-def updateFile():
-    try:
-        readFileFolder()
-        name = input("Please tell me your file Name: ")
-        p = resolve_path(name)
-        if p.exists() and p.is_file():
-            print("Press 1 for changing the name of the file")
-            print("Press 2 for overwriting the data of the file")
-            print("Press 3 for appending some content in the file")
-            res = get_int("Please tell your response :- ")
+        print("Press 1 for changing the name of the file")
+        print("Press 2 for overwriting the data of the file")
+        print("Press 3 for appending some content in the file")
+        choice = get_int("Please tell your response: ")
 
-            if res == 1:
-                newName = input("Enter new Name of the file: ")
-                p2 = resolve_path(newName)
-                p.rename(p2)
-                p = p2
-            elif res == 2:
-                with open(p, "w") as fs:
-                    data = input("Enter the data: ")
-                    fs.write(data)
-            elif res == 3:
-                with open(p, "a") as fs:
-                    data = input("Enter the data: ")
-                    fs.write(data)
-            else:
-                print("Invalid response")
+        if choice == 1:
+            new_name = input("Enter new name of the file: ").strip()
+            if not new_name:
+                print("New file name cannot be empty")
                 return
-
-            with open(p, "r") as fs:
-                data = fs.read()
-                print(data)
+            new_path = resolve_path(new_name)
+            path.rename(new_path)
+            path = new_path
+        elif choice == 2:
+            data = input("Enter the data: ")
+            with open(path, "w", encoding="utf-8") as file:
+                file.write(data)
+        elif choice == 3:
+            data = input("Enter the data: ")
+            with open(path, "a", encoding="utf-8") as file:
+                file.write(data)
         else:
-            print("This File does not exist")
-    except Exception as err:
-        print(err)
+            print("Invalid response")
+            return
+
+        # Show the file after the update.
+        with open(path, "r", encoding="utf-8") as file:
+            print(file.read())
+    except Exception as error:
+        print(error)
 
 
-def deleteFile():
+def delete_file():
+    """Delete an existing file."""
     try:
-        readFileFolder()
-        name = input("Enter the file name: ")
-        p = resolve_path(name)
-        if p.exists() and p.is_file():
-            p.unlink()
+        list_files()
+        name = input("Enter the file name: ").strip()
+        path = resolve_path(name)
+
+        if path.exists() and path.is_file():
+            path.unlink()
             print("FILE DELETED SUCCESSFULLY")
         else:
-            print("This File does not exist")
-    except Exception as err:
-        print(err)
+            print("This file does not exist")
+    except Exception as error:
+        print(error)
 
 
 def main():
+    """Show the menu until the user chooses to exit."""
     while True:
-        print("Press 1 for creating the file")
+        print("\nPress 1 for creating the file")
         print("Press 2 for reading the file")
         print("Press 3 for updating the file")
         print("Press 4 for deleting the file")
         print("Press 5 for exit")
 
-        check = get_int("Please tell your response :- ")
+        choice = get_int("Please tell your response: ")
 
-        if check == 1:
-            createfile()
-        elif check == 2:
-            readFile()
-        elif check == 3:
-            updateFile()
-        elif check == 4:
-            deleteFile()
-        elif check == 5:
+        if choice == 1:
+            create_file()
+        elif choice == 2:
+            read_file()
+        elif choice == 3:
+            update_file()
+        elif choice == 4:
+            delete_file()
+        elif choice == 5:
+            print("Goodbye!")
             break
         else:
             print("Invalid response")
 
 
+# This guard makes sure main() runs only when this file is executed directly,
+# not when it is imported as a module by another file.
 if __name__ == "__main__":
     main()
