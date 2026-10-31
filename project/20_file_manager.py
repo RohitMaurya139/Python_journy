@@ -16,7 +16,7 @@ Concepts used:
     - while loop     : keep showing the menu until the user chooses Exit.
 
 How to run:
-    python fileHandleProject.py
+    python 20_file_manager.py
 """
 
 from pathlib import Path

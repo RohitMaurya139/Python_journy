@@ -29,15 +29,15 @@ Example:
 from pathlib import Path
 
 # Build the path relative to this script, so it works from any directory.
-FILE_PATH = Path(__file__).parent / "superman.txt"
+FILE_PATH = Path(__file__).parent / "file_handling_output.txt"
 
 # ---- 1. Write (overwrite/create) ----
 with open(FILE_PATH, "w", encoding="utf-8") as file:
-    file.write("Hello, I am writing in superman.txt from fileHandel.py using Python.\n")
+    file.write("Hello, I am writing in file_handling_output.txt from 19_file_handling_basics.py using Python.\n")
 
 # ---- 2. Append (add to the end) ----
 with open(FILE_PATH, "a", encoding="utf-8") as file:
-    file.write("I am appending more text data in superman.txt.\n")
+    file.write("I am appending more text data in file_handling_output.txt.\n")
 
 # ---- 3. Read the whole file ----
 with open(FILE_PATH, "r", encoding="utf-8") as file:
