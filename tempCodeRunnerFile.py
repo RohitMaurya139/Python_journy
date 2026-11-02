@@ -1,3 +1,1 @@
-
-if __name__ == "__main__":
-    main()
+List , Dictionary and set comphrehension  and lamdafunction and map, filter , module and packages
